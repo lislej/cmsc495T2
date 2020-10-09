@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="LoanCalcService" targetNamespace="http://www.amortizer.org/LoanCalcService/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.amortizer.org/LoanCalcService/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.amortizer.org/LoanCalcService/">
+      <xsd:element name="CalcLoanAmt">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanPmt" type="xsd:double"/>
+            <xsd:element name="loanTerm" type="xsd:int"/>
+            <xsd:element name="loanRate" type="xsd:double"/>
+            <xsd:element name="EmailPIN" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CalcLoanAmtResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanAmt" type="xsd:double"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CalcLoanPmt">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanAmt" type="xsd:double"/>
+            <xsd:element name="loanRate" type="xsd:double"/>
+            <xsd:element name="loanTerm" type="xsd:int"/>
+            <xsd:element name="EmailPIN" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CalcLoanPmtResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanPmt" type="xsd:double"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CalcLoanTerm">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanAmt" type="xsd:double"/>
+            <xsd:element name="loanRate" type="xsd:double"/>
+            <xsd:element name="loanPmt" type="xsd:double"/>
+            <xsd:element name="EmailPIN" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CalcLoanTermResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanTerm" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CalcLoanRate">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanAmt" type="xsd:double"/>
+            <xsd:element name="loanPmt" type="xsd:double"/>
+            <xsd:element name="loanTerm" type="xsd:int"/>
+            <xsd:element name="EmailPIN" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CalcLoanRateResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanRate" type="xsd:double"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CalcLoanPayoffResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="loanPayoff" type="xsd:double"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CheckEmail">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="EmailAddress" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CheckEmailResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Response" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="VerifyEmailPIN">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="EmailAddress" type="xsd:string"/>
+            <xsd:element name="EmailPIN" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="VerifyEmailPINResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Response" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DeleteEmailPIN">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="EmailPIN" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DeleteEmailPINResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Response" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="DeleteEmailPINResponse">
+    <wsdl:part name="parameters" element="tns:DeleteEmailPINResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="VerifyEmailPINRequest">
+    <wsdl:part name="parameters" element="tns:VerifyEmailPIN">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CalcLoanTermRequest">
+    <wsdl:part name="parameters" element="tns:CalcLoanTerm">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CheckEmailResponse">
+    <wsdl:part name="parameters" element="tns:CheckEmailResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CalcLoanAmtResponse">
+    <wsdl:part name="parameters" element="tns:CalcLoanAmtResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CheckEmailRequest">
+    <wsdl:part name="parameters" element="tns:CheckEmail">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CalcLoanRateRequest">
+    <wsdl:part name="parameters" element="tns:CalcLoanRate">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CalcLoanTermResponse">
+    <wsdl:part name="parameters" element="tns:CalcLoanTermResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CalcLoanAmtRequest">
+    <wsdl:part name="parameters" element="tns:CalcLoanAmt">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CalcLoanPmtRequest">
+    <wsdl:part name="parameters" element="tns:CalcLoanPmt">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CalcLoanRateResponse">
+    <wsdl:part name="parameters" element="tns:CalcLoanRateResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="DeleteEmailPINRequest">
+    <wsdl:part name="parameters" element="tns:DeleteEmailPIN">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CalcLoanPmtResponse">
+    <wsdl:part name="parameters" element="tns:CalcLoanPmtResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="VerifyEmailPINResponse">
+    <wsdl:part name="parameters" element="tns:VerifyEmailPINResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="LoanCalcService">
+    <wsdl:operation name="CalcLoanAmt">
+      <wsdl:input message="tns:CalcLoanAmtRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:CalcLoanAmtResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalcLoanPmt">
+      <wsdl:input message="tns:CalcLoanPmtRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:CalcLoanPmtResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalcLoanTerm">
+      <wsdl:input message="tns:CalcLoanTermRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:CalcLoanTermResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalcLoanRate">
+      <wsdl:input message="tns:CalcLoanRateRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:CalcLoanRateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckEmail">
+      <wsdl:input message="tns:CheckEmailRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:CheckEmailResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyEmailPIN">
+      <wsdl:input message="tns:VerifyEmailPINRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:VerifyEmailPINResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteEmailPIN">
+      <wsdl:input message="tns:DeleteEmailPINRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:DeleteEmailPINResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LoanCalcServiceSOAP" type="tns:LoanCalcService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="CalcLoanAmt">
+      <soap:operation soapAction="http://www.amortizer.org/LoanCalcService/CalcLoanAmt"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalcLoanPmt">
+      <soap:operation soapAction="http://www.amortizer.org/LoanCalcService/CalcLoanPmt"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalcLoanTerm">
+      <soap:operation soapAction="http://www.amortizer.org/LoanCalcService/CalcLoanTerm"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalcLoanRate">
+      <soap:operation soapAction="http://www.amortizer.org/LoanCalcService/CalcLoanRate"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckEmail">
+      <soap:operation soapAction="http://www.amortizer.org/LoanCalcService/CheckEmail"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyEmailPIN">
+      <soap:operation soapAction="http://www.amortizer.org/LoanCalcService/VerifyEmailPIN"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteEmailPIN">
+      <soap:operation soapAction="http://www.amortizer.org/LoanCalcService/DeleteEmailPIN"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LoanCalcService">
+    <wsdl:port name="LoanCalcServiceSOAP" binding="tns:LoanCalcServiceSOAP">
+      <soap:address location="https://loancalcservice.herokuapp.com/services/LoanCalcService/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,10 @@
+﻿<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:loan="http://www.amortizer.org/LoanCalcService/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <loan:CalcLoanAmt>
+         <loanAmt>45000.00</loanAmt>
+         <loanTerm>60</loanTerm>
+         <loanRate>4.75</loanRate>
+      </loan:CalcLoanAmt>
+   </soapenv:Body>
+</soapenv:Envelope>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.7.9  Built on : Nov 16, 2018 (12:05:37 GMT) -->
+<serviceGroup>
+    <service name="LoanCalcService">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.amortizer.loancalcservice.LoanCalcServiceMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">org.amortizer.loancalcservice.LoanCalcServiceSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">false</parameter>
+        <operation name="VerifyEmailPIN" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.amortizer.org/LoanCalcService/">
+            <actionMapping>http://www.amortizer.org/LoanCalcService/VerifyEmailPIN</actionMapping>
+            <outputActionMapping>http://www.amortizer.org/LoanCalcService/LoanCalcService/VerifyEmailPINResponse</outputActionMapping>
+        </operation>
+        <operation name="DeleteEmailPIN" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.amortizer.org/LoanCalcService/">
+            <actionMapping>http://www.amortizer.org/LoanCalcService/DeleteEmailPIN</actionMapping>
+            <outputActionMapping>http://www.amortizer.org/LoanCalcService/LoanCalcService/DeleteEmailPINResponse</outputActionMapping>
+        </operation>
+        <operation name="CalcLoanTerm" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.amortizer.org/LoanCalcService/">
+            <actionMapping>http://www.amortizer.org/LoanCalcService/CalcLoanTerm</actionMapping>
+            <outputActionMapping>http://www.amortizer.org/LoanCalcService/LoanCalcService/CalcLoanTermResponse</outputActionMapping>
+        </operation>
+        <operation name="CalcLoanRate" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.amortizer.org/LoanCalcService/">
+            <actionMapping>http://www.amortizer.org/LoanCalcService/CalcLoanRate</actionMapping>
+            <outputActionMapping>http://www.amortizer.org/LoanCalcService/LoanCalcService/CalcLoanRateResponse</outputActionMapping>
+        </operation>
+        <operation name="CheckEmail" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.amortizer.org/LoanCalcService/">
+            <actionMapping>http://www.amortizer.org/LoanCalcService/CheckEmail</actionMapping>
+            <outputActionMapping>http://www.amortizer.org/LoanCalcService/LoanCalcService/CheckEmailResponse</outputActionMapping>
+        </operation>
+        <operation name="CalcLoanPmt" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.amortizer.org/LoanCalcService/">
+            <actionMapping>http://www.amortizer.org/LoanCalcService/CalcLoanPmt</actionMapping>
+            <outputActionMapping>http://www.amortizer.org/LoanCalcService/LoanCalcService/CalcLoanPmtResponse</outputActionMapping>
+        </operation>
+        <operation name="CalcLoanAmt" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.amortizer.org/LoanCalcService/">
+            <actionMapping>http://www.amortizer.org/LoanCalcService/CalcLoanAmt</actionMapping>
+            <outputActionMapping>http://www.amortizer.org/LoanCalcService/LoanCalcService/CalcLoanAmtResponse</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>

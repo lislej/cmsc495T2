@@ -1,0 +1,17 @@
+
+I) Loan Payment is not high enough to payoff loan amount when calculating interest rate, term, monthly payment
+
+   loan amt - 276000
+   loan pmt - 750
+   loan trm - 30 years
+
+   calculated rate is 0.0
+
+
+II)  Errant interest rate calculated
+
+   loan amt - 6000.00
+   loan pmt -  600.00
+   loan trm -   12
+
+calculated rate is 99.999999
