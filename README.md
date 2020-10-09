@@ -1,2 +1,3 @@
-# cmsc495T2
+# CMSC495-Take 2
+
 Team Charlie - Loan Amortization Calculator
