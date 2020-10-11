@@ -6,5 +6,5 @@ grant codeBase "file:${axis2.home}/lib/-" {
     permission java.io.FilePermission "${java.home}${file.separator}lib${file.separator}wsdl.properties", "read";
     permission java.net.SocketPermission "*", "resolve,connect,listen,accept";
     permission java.lang.RuntimePermission "*";
-    permission java.util.PropertyPermission "*", "read";
+    permission java.util.PropertyPermission "*", "read"; 
 };
