@@ -20,7 +20,7 @@ public class VersionServiceHandler {
 	}
 
 	public GetVersionResponse pingService() throws RemoteException, VersionExceptionException {
-        
+
 		return vsStub.getVersion(new GetVersion());
 
 	}

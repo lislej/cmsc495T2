@@ -5493,7 +5493,7 @@ public class LoanCalcServiceStub extends org.apache.axis2.client.Stub {
         public double getLoanRate() {
             return localLoanRate;
         }
-
+        
         /**
          * Auto generated setter method
          * @param param LoanRate

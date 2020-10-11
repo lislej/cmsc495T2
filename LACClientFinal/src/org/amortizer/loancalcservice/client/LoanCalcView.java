@@ -36,13 +36,14 @@ public class LoanCalcView implements ActionListener, Closeable {
 	public enum LoanVariableComponent {
 		LOANAMT, INTRATE, TERM, PAYMENT
 	};
-	
-	private LoanCalcController lcCntrlr = null;	
-	private LoanCalcModel lcModel = null;	
-	
+
+	private LoanCalcController lcCntrlr = null;
+	private LoanCalcModel lcModel = null;
+
 	// currency format
 	DecimalFormat df = new DecimalFormat("0.##");
-	
+	DecimalFormat df3 = new DecimalFormat("0.###");
+
 	// button text
 	private static final String CALCPAY = "Calculate";
 	private static final String CALCCLR = "   Clear   ";
@@ -58,6 +59,7 @@ public class LoanCalcView implements ActionListener, Closeable {
 	private static final String INTRATEERROR = "Interest Rate must be > 0";
 	private static final String TERMERROR = "Number of payments must be > 0";
 	private static final String PMTERROR = "Monthly Payment must be > 0";
+	private static final String RSNBLEINPUTS = "Make sure loan payment and term are large enough to cover the loan amount.";
 
 	// windows and layout constants
 	private static final int CALC_WIDTH = 500;
@@ -87,7 +89,7 @@ public class LoanCalcView implements ActionListener, Closeable {
 	private JTextField loanPmtJTF = new JTextField();
 	private JTextField loanTermJTF = new JTextField();
 	private JTextField loanRateJTF = new JTextField();
-    private JTextField userEmail = new JTextField();
+	private JTextField userEmail = new JTextField();
 	// radio buttons
 	private JRadioButton loanAmtRBtn = new JRadioButton(LOANAMT);
 	private JRadioButton loanPmtRBtn = new JRadioButton(PAYMENT, true);
@@ -108,31 +110,29 @@ public class LoanCalcView implements ActionListener, Closeable {
 	private JButton calcPmtBtn = new JButton(LoanCalcView.CALCPAY);
 	private JButton calcClrBtn = new JButton(LoanCalcView.CALCCLR);
 
-
 	@SuppressWarnings("unused")
-	private LoanCalcView() {}
-	
+	private LoanCalcView() {
+	}
+
 	public LoanCalcView(LoanCalcController lcController, LoanCalcModel lcModel) {
 		this.lcCntrlr = lcController;
 		this.lcModel = lcModel;
 		createPaymentCalculator();
 	}
-	
-	
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		this.lcCntrlr.guiEventController(e);
-		
+
 	}
 
 	@Override
 	public void close() throws IOException {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	private void createPaymentCalculator() {
 
 		// layout for radio button panel
@@ -164,7 +164,7 @@ public class LoanCalcView implements ActionListener, Closeable {
 		loanRateJTF.setMaximumSize(new Dimension(Integer.MAX_VALUE, loanRateJTF.getPreferredSize().height));
 		userEmail.setMaximumSize(new Dimension(Integer.MAX_VALUE, userEmail.getPreferredSize().height));
 		userEmail.setMinimumSize(new Dimension(Integer.MAX_VALUE, userEmail.getPreferredSize().height));
-		
+
 		// tie radio button selection to frame action listener
 		loanAmtRBtn.addActionListener(this);
 		loanRateRBtn.addActionListener(this);
@@ -202,11 +202,9 @@ public class LoanCalcView implements ActionListener, Closeable {
 		errorMsgLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		calcErrorMsgPanel.add(errorMsgLabel);
 
- 
 		// tie check box selection to frame
 		emailAmortSched.addActionListener(this);
-		
-		
+
 		// tie check box selection to frame
 		amortSchedChkBox.addActionListener(this);
 
@@ -225,7 +223,6 @@ public class LoanCalcView implements ActionListener, Closeable {
 		// add checkbox to panel
 		calcChkBoxPanel.add(emailAmortSched);
 		calcChkBoxPanel.add(userEmail);
-		
 
 		// tie button presses to frame
 		calcClrBtn.addActionListener(this);
@@ -288,30 +285,34 @@ public class LoanCalcView implements ActionListener, Closeable {
 		userEmail.setEditable(false);
 		// disable loan payment field
 		loanPmtJTF.setEditable(false);
+
+		// assume service is unavailable - will be checked on first ping
+		calcPmtBtn.setEnabled(false);
+
 		// set focus to first field
 		loanAmtJTF.requestFocus();
 		// center window
 		calcFrame.setLocationRelativeTo(null);
-		
+
 	}
-	
+
 	public void showCalculator(boolean visible) {
 		calcFrame.setVisible(visible);
 	}
 
 	public void clearView() {
-	
-	loanAmtJTF.setText("");
-	loanPmtJTF.setText("");
-	loanTermJTF.setText("");
-	loanRateJTF.setText("");
-	errorMsgLabel.setText("");
-	emailAmortSched.setSelected(false);
-	userEmail.setText("");
-	editorPane.setText("");
+
+		loanAmtJTF.setText("");
+		loanPmtJTF.setText("");
+		loanTermJTF.setText("");
+		loanRateJTF.setText("");
+		errorMsgLabel.setText("");
+		emailAmortSched.setSelected(false);
+		userEmail.setText("");
+		editorPane.setText("");
 	}
 
-	public void resetAllTextFields( String selectedRadioBtn) {
+	public void resetAllTextFields(String selectedRadioBtn) {
 
 		loanAmtJTF.setEditable(selectedRadioBtn.equals(LOANAMT) ? false : true);
 		loanPmtJTF.setEditable(selectedRadioBtn.equals(PAYMENT) ? false : true);
@@ -320,21 +321,21 @@ public class LoanCalcView implements ActionListener, Closeable {
 
 	}
 
-
 	public DecimalFormat getDf() {
 		return df;
+	}
+
+	public DecimalFormat getDf3() {
+		return df3;
 	}
 
 	public LoanCalcModel getLoanCalcModel() {
 		return lcModel;
 	}
 
-	
-	
 	public JEditorPane getEditorPane() {
 		return editorPane;
 	}
-	
 
 	public JTextField getLoanAmtJTF() {
 		return loanAmtJTF;
@@ -407,7 +408,7 @@ public class LoanCalcView implements ActionListener, Closeable {
 	public static String getCalcclr() {
 		return CALCCLR;
 	}
-	
+
 	public JFrame getCalcFrame() {
 		return calcFrame;
 	}
@@ -428,30 +429,33 @@ public class LoanCalcView implements ActionListener, Closeable {
 		return PMTERROR;
 	}
 
-    public JLabel getErrorMsgLabel() {
-    	return errorMsgLabel;
-    }
+	public static String getRsnbleInputs() {
+		return RSNBLEINPUTS;
+	}
+	public JLabel getErrorMsgLabel() {
+		return errorMsgLabel;
+	}
 
-    public JButton getCalcPmtBtn() {
-    	return calcPmtBtn;
-    }
-    
-    public void setCalcPmtBtn(boolean enable) {    	
-    	calcPmtBtn.setEnabled(enable);    	
-    }
-    
-    public void setUserEmail(String email) {
-    	userEmail.setText(email);
-    }
+	public JButton getCalcPmtBtn() {
+		return calcPmtBtn;
+	}
 
-    public String getUserEmail() {
-    	return userEmail.getText();
-    }
+	public void setCalcPmtBtn(boolean enable) {
+		calcPmtBtn.setEnabled(enable);
+	}
+
+	public void setUserEmail(String email) {
+		userEmail.setText(email);
+	}
+
+	public String getUserEmail() {
+		return userEmail.getText();
+	}
 
 //	public JTextField getUserEmail() {
 //		return userEmail;
 //	}
-	
+
 	public JCheckBox getEmailAmortSched() {
 		return emailAmortSched;
 	}
@@ -463,15 +467,14 @@ public class LoanCalcView implements ActionListener, Closeable {
 	public void setEmailAmortSched(boolean enabled) {
 		emailAmortSched.setEnabled(enabled);
 	}
-	
+
 	public void setEmailAmortSchedSelected(boolean selected) {
 		emailAmortSched.setSelected(selected);
 	}
-	
-	public void doClickEmailAmortSched() {		
-		emailAmortSched.doClick();		
+
+	public void doClickEmailAmortSched() {
+		emailAmortSched.doClick();
 	}
-	
 
 	public static class MyOwnFocusTraversalPolicy extends FocusTraversalPolicy {
 		Vector<Component> order;
@@ -511,7 +514,5 @@ public class LoanCalcView implements ActionListener, Closeable {
 		}
 
 	}
-
-	
 
 }

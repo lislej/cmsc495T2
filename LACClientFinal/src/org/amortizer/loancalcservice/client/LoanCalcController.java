@@ -14,12 +14,11 @@ import javax.swing.JRadioButton;
 
 import org.amortizer.loancalcservice.LoanCalcServiceHandler;
 import org.amortizer.loancalcservice.client.LoanCalcView.LoanVariableComponent;
+import org.amortizer.loancalcservice.utils.EmailValidator;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.version.VersionExceptionException;
 import org.apache.axis2.version.VersionServiceHandler;
 import org.apache.axis2.version.VersionStub.GetVersionResponse;
-
-
 
 public class LoanCalcController {
 
@@ -31,8 +30,6 @@ public class LoanCalcController {
 //	private final String CALC_SERVICE_URL = "http://localhost:8080/LoanCalcService/services/LoanCalcService";
 //	private final String VERSION_SERVICE_URL = "http://localhost:8080/LACServiceFinal/services/Version";
 //	private final String CALC_SERVICE_URL = "http://localhost:8080/LACServiceFinal/services/LoanCalcService";
-	
-	
 
 	private LoanCalcView lcView;
 	private LoanCalcModel lcModel;
@@ -40,16 +37,15 @@ public class LoanCalcController {
 	private VersionServiceHandler vsHndlr;
 	private Timer timer;
 	private ServicePinger pinger;
-	private EmailValidator emailValidator;	
+	private EmailValidator emailValidator;
 
 	public LoanCalcController() throws MalformedURLException, AxisFault {
-
 
 		initServiceStubs();
 		lcModel = new LoanCalcModel();
 		lcView = new LoanCalcView(this, lcModel);
 		pinger = new ServicePinger(vsHndlr, lcView);
-		
+
 		timer = new Timer("service-alive");
 		startServiceIsAlive();
 		showCalculator();
@@ -62,11 +58,10 @@ public class LoanCalcController {
 	}
 
 	private void startServiceIsAlive() {
-	
-		timer.schedule(pinger, 0, SERVICE_IS_ALIVE_INTERVAL);  //immediate ping followed by a ping every 15 minutes
-		
-	}
 
+		timer.schedule(pinger, 0, SERVICE_IS_ALIVE_INTERVAL); // immediate ping followed by a ping every 15 seconds
+
+	}
 
 	private void initServiceStubs() throws AxisFault, MalformedURLException {
 
@@ -89,7 +84,7 @@ public class LoanCalcController {
 
 	protected void guiEventController(ActionEvent e) {
 
-		boolean calcErrrorNoAmortSched = false;
+		boolean calcErrorNoAmortSched = false;
 
 		Object object = e.getSource();
 
@@ -105,48 +100,63 @@ public class LoanCalcController {
 					// loan amount
 					if (lcView.getLoanAmtRBtn().isSelected()) {
 
-						lcView.getLoanCalcModel().setLoanAmt(lcsHndlr.calcLoanAmt(lcModel));
+						try {
+							lcView.getLoanCalcModel().setLoanAmt(lcsHndlr.calcLoanAmt(lcModel));
+							lcView.getLoanAmtJTF()
+									.setText(lcView.getDf().format(lcView.getLoanCalcModel().getLoanAmt()));
+						} catch (Exception e1) {
 
-						lcView.getLoanAmtJTF().setText(lcView.getDf().format(lcView.getLoanCalcModel().getLoanAmt()));
+							calcErrorNoAmortSched = true;
+
+						}
 
 						// interest rate
 					} else if (lcView.getLoanRateRBtn().isSelected()) {
 
-						lcView.getLoanCalcModel().setIntRate(lcsHndlr.calcLoanRate(lcModel));
+						try {
+							double rate = lcsHndlr.calcLoanRate(lcModel);
+							lcView.getLoanCalcModel().setIntRate(new Double(String.format("%.3f", rate)));
 
-						lcView.getLoanRateJTF().setText(lcView.getDf().format(lcView.getLoanCalcModel().getIntRate()));
+							if (lcView.getLoanCalcModel().getIntRate() >= 0) {
+								lcView.getLoanRateJTF()
+										.setText(lcView.getDf3().format(lcView.getLoanCalcModel().getIntRate()));
 
-						if (lcView.getLoanCalcModel().getIntRate() > 0) {
+								// set calc error so amortization schedule not produced
+							} else {
+								calcErrorNoAmortSched = true;
+							}
 
-							lcView.getLoanRateJTF().setText(String.format("%.2f", lcView.getLoanCalcModel().getIntRate()));
-
-							// set calc error so amortization schedule not produced
-						} else {
-							calcErrrorNoAmortSched = true;
+						} catch (Exception e1) {
+							calcErrorNoAmortSched = true;
 						}
-
 						// loan term
 					} else if (lcView.getLoanTermRBtn().isSelected()) {
 
-						lcView.getLoanCalcModel().setTerm(lcsHndlr.calcLoanTerm(lcModel));
-
-						lcView.getLoanTermJTF().setText(lcView.getDf().format(lcView.getLoanCalcModel().getTerm()));
-
+						try {
+							lcView.getLoanCalcModel().setTerm(lcsHndlr.calcLoanTerm(lcModel));
+							lcView.getLoanTermJTF().setText(lcView.getDf().format(lcView.getLoanCalcModel().getTerm()));
+						} catch (Exception e1) {
+							calcErrorNoAmortSched = true;
+						}
 						// loan payment
 					} else if (lcView.getLoanPmtRBtn().isSelected()) {
 
-						lcView.getLoanCalcModel().setLoanPmt(lcsHndlr.calcLoanPmt(lcModel));
-
-						lcView.getLoanPmtJTF().setText(lcView.getDf().format(lcView.getLoanCalcModel().getLoanPmt()));
-
+						try {
+							lcView.getLoanCalcModel().setLoanPmt(lcsHndlr.calcLoanPmt(lcModel));
+							lcView.getLoanPmtJTF()
+									.setText(lcView.getDf().format(lcView.getLoanCalcModel().getLoanPmt()));
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 
 					// if checkbox is selected output amortization schedule
-					if (lcView.getAmortSchedChkBox().isSelected() && !calcErrrorNoAmortSched) {
+					if (lcView.getAmortSchedChkBox().isSelected() && !calcErrorNoAmortSched) {
 						createAmortizationSchedule();
 					}
 
-					calcErrrorNoAmortSched = false;
+					calcErrorNoAmortSched = false;
 
 				}
 				// clear button press
@@ -203,21 +213,30 @@ public class LoanCalcController {
 				} else {
 					lcView.getEditorPane().setText("");
 				}
-			} else if ( ( (JCheckBox) object).getText().equals("Email Amortization Schedule") )  { 
-				
+			} else if (((JCheckBox) object).getText().equals("Email Amortization Schedule")) {
+
 				if (lcView.getEmailAmortSched().isSelected()) {
 
 					emailValidator = new EmailValidator(lcView, getLcsHndlr());
-					
+
 					emailValidator.setVisible(true);
-					
+
 				} else {
-					
+
 					this.lcView.setUserEmail("");
-					
+					this.lcView.getLoanCalcModel().setEmailPin("");
+
 				}
 			}
 		}
+	}
+
+	private boolean isUnReasonableInputs(LoanCalcView lcView) {
+
+		int lnTerm = new Integer(lcView.getLoanTermJTF().getText());
+		double lnPmt = new Double(lcView.getLoanPmtJTF().getText());
+		return (lnTerm * lnPmt < lcModel.getLoanAmt());
+
 	}
 
 	// validate data
@@ -282,7 +301,12 @@ public class LoanCalcController {
 
 		boolean retCode = false;
 
-		if (validateFieldData(LoanVariableComponent.LOANAMT) && !lcView.getLoanAmtRBtn().isSelected()) {
+		if (lcView.getLoanRateRBtn().isSelected() && this.isUnReasonableInputs(lcView)) {
+
+			JOptionPane.showMessageDialog(lcView.getCalcFrame(), LoanCalcView.getRsnbleInputs());
+
+			lcView.getLoanTermJTF().requestFocus();
+		} else if (validateFieldData(LoanVariableComponent.LOANAMT) && !lcView.getLoanAmtRBtn().isSelected()) {
 
 			JOptionPane.showMessageDialog(lcView.getCalcFrame(), LoanCalcView.getLoanamterror());
 
@@ -320,33 +344,32 @@ public class LoanCalcController {
 
 		double balance = lcView.getLoanCalcModel().getLoanAmt();
 		double payment = lcView.getLoanCalcModel().getLoanPmt();
-		double rate    = lcView.getLoanCalcModel().getIntRate();
-	    int    term    = lcView.getLoanCalcModel().getTerm();
-	    double totalInt = 0.0;
-	    
-	    
+		double rate = lcView.getLoanCalcModel().getIntRate();
+		int term = lcView.getLoanCalcModel().getTerm();
+		double totalInt = 0.0;
+
 		double monthlyInterest = 0;
 		double principal = 0;
 
-		
 		StringBuffer amortScheduleBody = new StringBuffer();
-		
-		amortScheduleBody.append("Month   Payment   Principal    Interest       Balance");
+
+		amortScheduleBody.append("Month    Payment   Principal    Interest       Balance");
 		amortScheduleBody.append("\n");
 
 		for (int i = 0; i < lcView.getLoanCalcModel().getTerm(); i++) {
 
-			monthlyInterest = calcMonthlyInterest(balance, lcView.getLoanCalcModel().getIntRate());
-			totalInt+=monthlyInterest;
+			monthlyInterest = calcMonthlyInterest(balance, rate);
+			totalInt += monthlyInterest;
 			principal = calculatePrincipal(payment, monthlyInterest);
 			balance = calculateBalance(balance, lcView.getLoanCalcModel().getDownPmt(), principal);
 
-			amortScheduleBody.append(String.format(" %3d    %7.2f     %7.2f     %7.2f     %8.2f", i + 1, payment, principal, monthlyInterest, balance > 0 ? balance:0.00));
+			amortScheduleBody.append(String.format(" %4d    %7.2f     %7.2f     %7.2f     %9.2f", i + 1, payment,
+					principal, monthlyInterest, balance > 0 ? balance : 0.00));
 			amortScheduleBody.append("\n");
 
 		}
 
-		//create header
+		// create header
 		StringBuffer amortScheduleHdr = new StringBuffer();
 
 		amortScheduleHdr.append("-----------------Loan Amortization Schedule-----------------");
@@ -357,23 +380,21 @@ public class LoanCalcController {
 		amortScheduleHdr.append("\n");
 		amortScheduleHdr.append(String.format("Loan Payment .....: %10.2f", lcView.getLoanCalcModel().getLoanPmt()));
 		amortScheduleHdr.append("\n");
-		amortScheduleHdr.append(String.format("Interest Rate ....: %10.2f", lcView.getLoanCalcModel().getIntRate()));
+		amortScheduleHdr.append(String.format("Interest Rate ....: %10.3f", lcView.getLoanCalcModel().getIntRate()));
 		amortScheduleHdr.append("\n");
 		amortScheduleHdr.append(String.format("Loan Term ........: %10d", lcView.getLoanCalcModel().getTerm()));
 		amortScheduleHdr.append("\n");
 		amortScheduleHdr.append(String.format("Interest Paid ....: %10.2f", totalInt));
-		
+
 		amortScheduleHdr.append("\n");
 		amortScheduleHdr.append("\n");
 		amortScheduleHdr.append("\n");
 
-		
-		//assemble final document
+		// assemble final document
 		StringBuffer amortSchedule = new StringBuffer();
 		amortSchedule.append(amortScheduleHdr.toString());
 		amortSchedule.append(amortScheduleBody.toString());
-		
-		
+
 		Font font = new Font("Courier New", Font.PLAIN, 11);
 		lcView.getEditorPane().setFont(font);
 		lcView.getEditorPane().setText(amortSchedule.toString());
@@ -383,15 +404,15 @@ public class LoanCalcController {
 	private String leftPad(String value, int len, String pad) {
 		StringBuilder newStr = new StringBuilder();
 		newStr.append(value);
-		if (value!=null && value.length() < len) {
-			for (int i=0; i<len-value.length(); i++) {
-		       newStr.insert(0, pad);
+		if (value != null && value.length() < len) {
+			for (int i = 0; i < len - value.length(); i++) {
+				newStr.insert(0, pad);
 			}
 		}
-		
+
 		return newStr.toString();
 	}
-	
+
 	private double calcMonthlyInterest(double balance, double intRate) {
 
 		return balance * (intRate / (12 * 100));
@@ -407,45 +428,43 @@ public class LoanCalcController {
 
 		return (loanAmt - downPmt - principal);
 	}
-	
-	
-	private interface Ping {			
+
+	private interface Ping {
 		void pingService() throws RemoteException, VersionExceptionException;
 	}
-	
+
 	class ServicePinger extends TimerTask implements Ping {
 
 		VersionServiceHandler vsHndlr;
 		LoanCalcView lcView;
-		
+
 		ServicePinger(VersionServiceHandler vsHndlr, LoanCalcView lcView) {
-			super();			
+			super();
 			this.vsHndlr = vsHndlr;
 			this.lcView = lcView;
 		}
 
 		@Override
-		public void pingService() throws RemoteException, VersionExceptionException {
+		public void pingService() {
 
-			//ping the service synchronously
-			GetVersionResponse verRsp = vsHndlr.pingService();
-
-			//set the calculate button accordingly
-			lcView.getCalcPmtBtn().setEnabled(verRsp.get_return().contains("Axis2 version is".subSequence(0, 16)));
-			
+			// ping the service synchronously
+			GetVersionResponse verRsp = null;
+			try {
+				verRsp = vsHndlr.pingService();
+				lcView.getCalcPmtBtn().setEnabled(verRsp.get_return().contains("Axis2 version is".subSequence(0, 16)));
+			} catch (RemoteException | VersionExceptionException e) {
+				// set the calculate button accordingly
+				lcView.getCalcPmtBtn().setEnabled(false);
+			}
 		}
 
 		@Override
 		public void run() {
-	
-			try {
-				pingService();
-			} catch (RemoteException | VersionExceptionException e) {
 
-			}
-			
+			pingService();
+
 		}
-		
+
 	}
 
 }
