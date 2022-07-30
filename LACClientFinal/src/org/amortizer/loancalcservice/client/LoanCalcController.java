@@ -1,5 +1,8 @@
 package org.amortizer.loancalcservice.client;
 
+import java.lang.Math;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.net.MalformedURLException;
@@ -358,10 +361,10 @@ public class LoanCalcController {
 
 		for (int i = 0; i < lcView.getLoanCalcModel().getTerm(); i++) {
 
-			monthlyInterest = calcMonthlyInterest(balance, rate);
+			monthlyInterest = round(calcMonthlyInterest(balance, rate), 3);
 			totalInt += monthlyInterest;
-			principal = calculatePrincipal(payment, monthlyInterest);
-			balance = calculateBalance(balance, lcView.getLoanCalcModel().getDownPmt(), principal);
+			principal = round(calculatePrincipal(payment, monthlyInterest),3);
+			balance = round(calculateBalance(balance, lcView.getLoanCalcModel().getDownPmt(), principal),3);
 
 			amortScheduleBody.append(String.format(" %4d    %7.2f     %7.2f     %7.2f     %9.2f", i + 1, payment,
 					principal, monthlyInterest, balance > 0 ? balance : 0.00));
@@ -401,6 +404,116 @@ public class LoanCalcController {
 
 	}
 
+	public float round(float data, int decplace)	{
+
+		Math.pow(10, decplace);
+		
+		int ibase = (int) (data * Math.pow(10,decplace-1));
+	    int diff = (int) (data * Math.pow(10,decplace) - (ibase * 10));
+
+	    double tbase = ibase/Math.pow(10,decplace-1);
+
+	    return (float)(diff < 5 ? tbase : tbase + 1/Math.pow(10,decplace-1));
+	}
+	
+	public double round(double data, int decplace)	{
+
+		Math.pow(10, decplace);
+		
+		int ibase = (int) (data * Math.pow(10,decplace-1));
+	    int diff = (int) (data * Math.pow(10,decplace) - (ibase * 10));
+
+	    double tbase = ibase/Math.pow(10,decplace-1);
+
+	    return diff < 5 ? tbase : tbase + 1/Math.pow(10,decplace-1);
+	}
+	
+	public BigDecimal round(BigDecimal data, int decplace)	{
+
+		Math.pow(10, decplace);
+		
+		int ibase = (int) (data.doubleValue() * Math.pow(10,decplace-1));
+	    int diff = (int) (data.doubleValue() * Math.pow(10,decplace) - (ibase * 10));
+
+	    double tbase = ibase/Math.pow(10,decplace-1);
+
+	    return new BigDecimal(diff < 5 ? tbase : tbase + 1/Math.pow(10,decplace-1));
+	}
+
+
+	public <T> void genericsMethod(T data) {
+	    System.out.println("Generics Method:");
+	    System.out.println("Data Passed: " + data);
+	  }
+
+//	private void createAmortizationSchedule() {
+//
+//		BigDecimal balance = new BigDecimal(lcView.getLoanCalcModel().getLoanAmt());
+//		BigDecimal payment = new BigDecimal(lcView.getLoanCalcModel().getLoanPmt());
+//		BigDecimal rate = new BigDecimal(lcView.getLoanCalcModel().getIntRate());
+//		BigDecimal term = new BigDecimal(lcView.getLoanCalcModel().getTerm());
+//		BigDecimal totalInt = new BigDecimal(0.0);
+//
+//		BigDecimal monthlyInterest = new BigDecimal(0.0);
+//		BigDecimal principal = new BigDecimal(0.0);
+//		
+//		BigDecimal downPymnt = new BigDecimal(lcView.getLoanCalcModel().getDownPmt());
+//		BigDecimal months = new BigDecimal(12);
+//		BigDecimal divisor = new BigDecimal(100);
+//	
+//
+//		StringBuffer amortScheduleBody = new StringBuffer();
+//
+//		amortScheduleBody.append("Month    Payment   Principal    Interest       Balance");
+//		amortScheduleBody.append("\n");
+//
+//		for (int i = 0; i < term.toBigInteger().intValue(); i++) {
+//				
+//			monthlyInterest = balance.multiply(rate.divide(months).divide(divisor));
+//			monthlyInterest = round(monthlyInterest,3);
+//			totalInt = totalInt.add(monthlyInterest);
+//			principal = payment.subtract(monthlyInterest);
+//			balance = (balance.subtract(downPymnt)).subtract(principal);
+//			
+//			amortScheduleBody.append(String.format(" %4d    %7.3f     %7.3f     %7.3f     %9.3f", i + 1, payment,
+//					principal.doubleValue(), monthlyInterest.doubleValue(), balance.doubleValue() > 0 ? balance.doubleValue() : 0.00));
+//			amortScheduleBody.append("\n");
+//
+//		}
+//
+//		// create header
+//		StringBuffer amortScheduleHdr = new StringBuffer();
+//
+//		amortScheduleHdr.append("-----------------Loan Amortization Schedule-----------------");
+//		amortScheduleHdr.append("\n");
+//		amortScheduleHdr.append("\n");
+//
+//		amortScheduleHdr.append(String.format("Loan Amount ......: %10.3f", lcView.getLoanCalcModel().getLoanAmt()));
+//		amortScheduleHdr.append("\n");
+//		amortScheduleHdr.append(String.format("Loan Payment .....: %10.3f", lcView.getLoanCalcModel().getLoanPmt()));
+//		amortScheduleHdr.append("\n");
+//		amortScheduleHdr.append(String.format("Interest Rate ....: %10.3f", lcView.getLoanCalcModel().getIntRate()));
+//		amortScheduleHdr.append("\n");
+//		amortScheduleHdr.append(String.format("Loan Term ........: %10d", lcView.getLoanCalcModel().getTerm()));
+//		amortScheduleHdr.append("\n");
+//		amortScheduleHdr.append(String.format("Interest Paid ....: %10.3f", totalInt.doubleValue()));
+//
+//		amortScheduleHdr.append("\n");
+//		amortScheduleHdr.append("\n");
+//		amortScheduleHdr.append("\n");
+//
+//		// assemble final document
+//		StringBuffer amortSchedule = new StringBuffer();
+//		amortSchedule.append(amortScheduleHdr.toString());
+//		amortSchedule.append(amortScheduleBody.toString());
+//
+//		Font font = new Font("Courier New", Font.PLAIN, 11);
+//		lcView.getEditorPane().setFont(font);
+//		lcView.getEditorPane().setText(amortSchedule.toString());
+//
+//	}
+
+	
 	private String leftPad(String value, int len, String pad) {
 		StringBuilder newStr = new StringBuilder();
 		newStr.append(value);
@@ -413,19 +526,35 @@ public class LoanCalcController {
 		return newStr.toString();
 	}
 
-	private double calcMonthlyInterest(double balance, double intRate) {
-
-		return balance * (intRate / (12 * 100));
+	private BigDecimal calcMonthlyInterestBD(BigDecimal balance, BigDecimal intRate) {
+		
+		BigDecimal months = new BigDecimal(12);
+		BigDecimal divisor = new BigDecimal(100);
+		
+		return balance.multiply(intRate.divide(months, RoundingMode.HALF_UP).multiply(divisor));
 	}
 
+	private void calculatePrincipalBD(BigDecimal loanPmt, BigDecimal monthlyInterest, BigDecimal principal) {
+		
+		 
+	}
+
+	private void calculateBalanceBD(BigDecimal balance, BigDecimal downPmt, BigDecimal principal) {
+		
+		balance = (balance.subtract(downPmt)).subtract(principal);
+		
+	}
+	
+	private double calcMonthlyInterest(double balance, double intRate) {
+		double monthlyInt = intRate / (12 * 100);
+		return balance * monthlyInt ;
+	}
+	
 	private double calculatePrincipal(double loanPmt, double monthlyInterest) {
-
 		return loanPmt - monthlyInterest;
-
 	}
 
 	private double calculateBalance(double loanAmt, double downPmt, double principal) {
-
 		return (loanAmt - downPmt - principal);
 	}
 
