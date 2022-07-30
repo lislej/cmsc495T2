@@ -248,7 +248,7 @@ public class LoanCalcView implements ActionListener, Closeable {
 		calcFrame.setResizable(false);
 
 		// set tab order
-		Vector<Component> order = new Vector<Component>(7);
+		Vector<Component> order = new Vector<Component>(8);
 		calcFieldsAndLabelsPanel.add(loanAmtRBtn);
 		calcFieldsAndLabelsPanel.add(loanAmtJTF);
 		calcFieldsAndLabelsPanel.add(loanRateRBtn);
