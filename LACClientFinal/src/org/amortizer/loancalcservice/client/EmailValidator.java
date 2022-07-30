@@ -217,20 +217,28 @@ public class EmailValidator extends JDialog implements ActionListener, Closeable
 
 			} else if (((JButton) object).getText().trim().equalsIgnoreCase("Verify Email")) {
 
-				String msg = lcsHdlr.chkEmail(this.emailAddress.getText());
-				if (msg != null && msg.equalsIgnoreCase("Check the email address you entered for a verification pin number.")) {
-					JOptionPane.showMessageDialog(this, String.format("Your PIN has been emailed to: %s", this.emailAddress.getText()));
-					
-					this.emailPIN.setEnabled(true);
-				} else {
-					JOptionPane.showMessageDialog(this, "Check your email address and retry.");					
-					this.emailPIN.setEnabled(true);
-					this.okButton.setEnabled(false);
+				String msg = null;
+				try {
+					msg = lcsHdlr.chkEmail(this.emailAddress.getText());
+					if (msg != null && msg.equalsIgnoreCase("Check the email address you entered for a verification pin number.")) {
+						JOptionPane.showMessageDialog(this, String.format("Your PIN has been emailed to: %s", this.emailAddress.getText()));
+						
+						this.emailPIN.setEnabled(true);
+					} else {
+						JOptionPane.showMessageDialog(this, "Check your email address and retry.");					
+						this.emailPIN.setEnabled(true);
+						this.okButton.setEnabled(false);
+					}
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(this, "The email verification call generated an exception. Please retry. \n\n " + e1.getMessage());
 				}
+				
 
 			} else if (((JButton) object).getText().trim().equalsIgnoreCase("Verify PIN")) {
 
-				String msg = lcsHdlr.verfyPIN(this.emailPIN.getText(), this.emailAddress.getText());
+				String msg = null;
+				try {
+				msg = lcsHdlr.verfyPIN(this.emailPIN.getText(), this.emailAddress.getText());
 				if (msg != null && msg.equalsIgnoreCase("success")) {
 					JOptionPane.showMessageDialog(this, String.format("Your PIN has been verified.", this.emailAddress.getText()));
 					this.okButton.setEnabled(true);
@@ -242,7 +250,9 @@ public class EmailValidator extends JDialog implements ActionListener, Closeable
 				} else {
 					JOptionPane.showMessageDialog(this, "Ensure you have entered the PIN received.");
 				}
-
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(this, "The email pin validation call generated an exception. Please retry. \n\n " + e1.getMessage());					
+				}
 			}
 		}
 	}
